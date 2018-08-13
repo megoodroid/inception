@@ -5248,8 +5248,13 @@ int mysql_field_check(THD* thd, Create_field* field, char* table_name)
 
     if (field->comment.length == 0)
     {
-        my_error(ER_COLUMN_HAVE_NO_COMMENT, MYF(0), field->field_name, table_name);
-        mysql_errmsg_append(thd);
+        if (strncmp(field->field_name, "id", 2) == 0
+                || strncmp(field->field_name, "gmt_create", 10) == 0
+                || strncmp(field->field_name, "gmt_modified", 12) == 0) {
+        } else {
+            my_error(ER_COLUMN_HAVE_NO_COMMENT, MYF(0), field->field_name, table_name);
+            mysql_errmsg_append(thd);
+        }
     }
 
     if (field->sql_type == MYSQL_TYPE_STRING && field->length > inception_max_char_length)
